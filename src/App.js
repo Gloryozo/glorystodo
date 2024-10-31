@@ -1,26 +1,54 @@
-import { useState } from 'react'; // Import the useState Hook to manage state in our component.
+import { useEffect, useState } from 'react'; // Import the useState Hook to manage state in our component.
 import './App.css'; // Import the CSS file for styling our app.
+import axios from 'axios'; // Import the axios library to make HTTP requests.
 
-function App() {
+
+const url = 'http://localhost:3001/';
+
+ function App() {
   // We create a state variable called 'task' to hold the current task input by the user.
   // 'setTask' is a function that updates the 'task' state.
   const [task, setTask] = useState('');
-  
-  // We create another state variable called 'tasks' which is an array to hold all the tasks.
+    // We create another state variable called 'tasks' which is an array to hold all the tasks.
   // 'setTasks' is a function that updates the 'tasks' state.
   const [tasks, setTasks] = useState([]);
 
+  useEffect(() => {
+    axios.get(url)
+      .then(response => {
+        setTasks(response.data)
+    }).catch(error => {
+        alert(error.response.data.error ? error.response.data.error : error)
+     });
+  }, []);
+
+  
   // This function adds the current task to the tasks array when called.
   const addTask = () => {
-    setTasks([...tasks, task]); // Add the new task to the existing list of tasks.
-    setTask(''); // Clear the input field after adding the task.
+    axios.post(url + 'create',{
+      description: task
+    })
+    .then(response => {
+      console.log(response)
+      setTasks([...tasks,{id: response.data.id,description: task}]); // Add the new task to the existing list of tasks.
+      setTask(''); // Clear the input field after adding the task.
+    }).catch(error => {
+      alert(error.response.data.error ? error.response.data.error : error)
+    });
+    
   }
 
   // This function deletes a task from the tasks array when called.
-  const deleteTask = (deleted) => {
-    // Create a new array without the deleted task.
-    const withoutRemoved = tasks.filter((item) => item !== deleted);
-    setTasks(withoutRemoved); // Update the tasks state with the new array.
+  const deleteTask = (id) => {
+    axios.delete(url + 'delete/' + id)
+      .then(response => {
+        console.log(response)
+        // Create a new array without the deleted task.
+        const withoutRemoved = tasks.filter((item) => item.id !== id);
+        setTasks(withoutRemoved); // Update the tasks state with the new array.
+      }).catch(error => {
+        alert(error.response.data.error ? error.response.data.error : error)
+      });
   }
 
   return (
@@ -42,14 +70,16 @@ function App() {
           }}
         />
       </form>
-      <ul> {/* Unordered list to display the tasks */}
-        {tasks.map((item) => ( // Loop through each task in the tasks array
-          <li key={item}> {/* Each task is a list item */}
-            {item} {/* Display the task */}
+      <ul>                  {/* Unordered list to display the tasks */}
+        {
+        Array.isArray(tasks) && tasks.map(item => (           // Loop through each task in the tasks array
+          <li key={item.id}>{item.description}      {/* Each task is a list item */}
+           
             {/* Button to delete the task */}
-            <button className='delete-button' onClick={() => deleteTask(item)}>Delete</button>
+            <button className='delete-button' onClick={() => deleteTask(item.id)}>Delete</button>
           </li>
-        ))}
+        ))
+        }
       </ul>
     </div>
   );
