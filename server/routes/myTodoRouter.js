@@ -1,20 +1,9 @@
-// Import the necessary modules
-import express from 'express'; // Import the Express module for creating the server
-import cors from 'cors'; // Import CORS to allow cross-origin requests
-import { pool } from './helper/db.js'; // Import the pool object from the db.js file
+import { pool } from '../helper/db.js'; // Import the pool object from the db.js file   
+import { Router } from 'express';
 
-// Set the port number where the server will listen for requests
-const port = 3001; 
-const app = express(); // Create an instance of an Express application
+const router = Router(); // Create a new router
 
-// Middleware to enable CORS and parse incoming JSON and URL-encoded data
-app.use(cors()); // Allow requests from different origins
-app.use(express.json()); // Parse JSON data in requests
-app.use(express.urlencoded({ extended: false })); // Parse URL-encoded data
-
-// Define a GET route for the root URL
-app.get('/', (req, res) => {
-    // Query the database to get all tasks
+router.get('/', async (req, res) => {
     pool.query('select * from mytask', (error, result) => {
         if (error) {
             // If there's an error, send a 500 status with the error message
@@ -25,9 +14,8 @@ app.get('/', (req, res) => {
     });
 });
 
-// Define a POST route to create a new task
-app.post('/create', (req, res) => {
-  // Insert a new task into the database
+router.post('create', async (req, res) => {
+    // Insert a new task into the database
     pool.query('insert into mytask (description) values ($1) returning *', [req.body.description], (error, result) => {
         if (error) {
             // If there's an error, send a 500 status with the error message
@@ -38,8 +26,7 @@ app.post('/create', (req, res) => {
     });
 });
 
-// Define a DELETE route to remove a task by ID
-app.delete('/delete/:id', (req, res) => {
+router.delete('delete/:id', async (req, res) => {
     const id = parseInt(req.params.id); // Get the ID from the request parameters and convert it to an integer
 
     // Delete the task with the specified ID from the database
@@ -51,10 +38,5 @@ app.delete('/delete/:id', (req, res) => {
         // If successful, send a 200 status with the deleted task's ID
         return res.status(200).json({ id: req.params.id });
     });
-});
-
-// Start the server and listen for incoming requests
-app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`); // Log a message when the server starts
 });
 
