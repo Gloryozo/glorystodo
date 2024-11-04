@@ -4,6 +4,8 @@ import fs from 'fs';
 import path from 'path';
 // Import the database connection pool from the 'db.js' module
 import { pool } from './db.js';
+// Import the 'hash' function from the 'bcrypt' module
+import { hash } from 'bcrypt';
 
 // Define __dirname to get the directory name of the current module
 // Note: `import.meta.url` is used to derive the directory name in ES modules
@@ -22,5 +24,14 @@ const initializeTestDatabase = async () => {
     await pool.query(sql);
 };
 
+// Define a test user object for inserting test user with sample data
+const insertTestUser = (email, password) => {
+   hash(password,10, (error, hashedPassword) => {
+    pool.query ('insert into account (email, password) values ($1, $2)',
+        [email, hashedPassword])
+        });
+}
+
+
 // Export the function so it can be used in other modules
-export { initializeTestDatabase };
+export { initializeTestDatabase, insertTestUser };

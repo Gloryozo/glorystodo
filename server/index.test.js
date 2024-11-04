@@ -138,3 +138,28 @@ it ('should not delete a task with SQL injection', async () => {
             expect(data).to.include.all.keys('id', 'email');
         });
     });
+
+    describe ('POST login', () => {
+        const email = 'login@example.com';
+        const password = 'login123';
+        it ('should login a user with valid email and password', async () => {
+            const response = await fetch(base_url + 'user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'email': email, 'password':password })
+            });
+
+            const data = await response.json();
+
+            // Assert that the response status is 200 (OK)
+            expect(response.status).to.equal(200, data.error);
+
+            // Assert that the data is an object
+            expect(data).to.be.an('object');
+
+            // Assert that the data includes the key 'id'
+            expect(data).to.include.all.keys('id', 'email', 'token');
+        });
+    });
