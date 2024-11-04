@@ -1,3 +1,4 @@
+import { initializeTestDatabase } from "./helper/test";
 import { expect } from "chai"; // Import the 'expect' assertion style from Chai
 
 const base_url = 'http://localhost:3001/'; // Define the base URL for the API
@@ -112,4 +113,28 @@ it ('should not delete a task with SQL injection', async () => {
     expect(data).to.be.an('object');
     expect(data).to.include.all.keys('error');
     });
-});
+    });
+    describe ('POST register', () => {
+        const email = 'testing@example.com';
+        const password = 'test123';
+        it ('should register a new user with valid email and password', async () => {
+            const response = await fetch(base_url + 'user/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'email': email, 'password':password })
+            });
+    
+            const data = await response.json();
+    
+            // Assert that the response status is 201 (OK)
+            expect(response.status).to.equal(201, data.error);
+    
+            // Assert that the data is an object
+            expect(data).to.be.an('object');
+    
+            // Assert that the data includes the key 'id'
+            expect(data).to.include.all.keys('id', 'email');
+        });
+    });

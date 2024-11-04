@@ -15,7 +15,7 @@ router.get('/', async (req, res, next) => {
     });
 });
 
-router.post('create', async (req, res, next) => {
+router.post('/create', async (req, res, next) => {
     // Insert a new task into the database
     pool.query('insert into mytask (description) values ($1) returning *', [req.body.description], (error, result) => {
         if (error) {
@@ -27,7 +27,7 @@ router.post('create', async (req, res, next) => {
     });
 });
 
-router.delete('delete/:id', async (req, res, next) => {
+router.delete('/delete/:id', async (req, res, next) => {
     const id = parseInt(req.params.id); // Get the ID from the request parameters and convert it to an integer
 
     // Delete the task with the specified ID from the database
@@ -41,3 +41,4 @@ router.delete('delete/:id', async (req, res, next) => {
     });
 });
 
+export default router; // Export the router object

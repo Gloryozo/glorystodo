@@ -1,8 +1,8 @@
 // Import the necessary modules
 import express from 'express'; // Import the Express module for creating the server
 import cors from 'cors'; // Import CORS to allow cross-origin requests
-import { pool } from './helper/db.js'; // Import the pool object from the db.js file
 import myTodoRouter from './routes/myTodoRouter.js'; // Import the router object from the myTodoRouter.js file
+import userRouter  from './routes/userRouter.js'; // Import the router object from the userRouter.js file
 
 // Set the port number where the server will listen for requests
 const port = process.env.PORT 
@@ -12,7 +12,8 @@ const app = express(); // Create an instance of an Express application
 app.use(cors()); // Allow requests from different origins
 app.use(express.json()); // Parse JSON data in requests
 app.use(express.urlencoded({ extended: false })); // Parse URL-encoded data
-app.use('/', myTodoRouter);
+app.use('/', myTodoRouter);     // Use the myTodoRouter for requests to the root URL
+app.use('/user', userRouter);   // Use the userRouter for requests to the /user URL
 
 app.use((err,req,res,next) => {
     const statusCode = err.statusCode || 500;

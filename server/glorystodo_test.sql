@@ -1,4 +1,10 @@
-drop table if exist mytask;
+drop table if exists mytask;
+
+create table account(
+    id serial primary key,
+    email varchar(50) unique not null,
+    password varchar(255) not null
+);
 
 create table mytask(
     id serial primary key,
