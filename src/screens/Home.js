@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'; // Import the useState Hook to manage state in our component.
-import './App.css'; // Import the CSS file for styling our app.
+import './Home.css'; // Import the CSS file for styling our app.
 import axios from 'axios'; // Import the axios library to make HTTP requests.
+import Row from '../components/Row';
 
 
 const url = 'http://localhost:3001/';
 
-function App() {
+function Home() {
+  const { user } = useUser(); // Destructure the user object from the UserContext
   const [task, setTask] = useState(''); // State for current task input
   const [tasks, setTasks] = useState([]); // State for all tasks
 
@@ -85,4 +87,4 @@ function App() {
   );
 }
 
-export default App; // Export the App component so it can be used in other files.
+export default Home; // Export the App component so it can be used in other files.
