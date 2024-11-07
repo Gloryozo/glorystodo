@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'; // Import the dotenv package to read environment variables 
 import pkg from 'pg'; // Import the pg package to interact with the PostgreSQL database
-import cors from 'cors'; // Import the CORS package to allow cross-origin requests
-import express from 'express'; // Import the Express package to create the server
+//import cors from 'cors'; // Import the CORS package to allow cross-origin requests
+//import express from 'express'; // Import the Express package to create the server
 
 const environment = process.env.NODE_ENV; // Get the current environment
 dotenv.config();
@@ -13,7 +13,7 @@ const openDb = () => {
     const pool = new Pool({
         user: process.env.DB_USER, // Database username
         host:  process.env.DB_HOST, // Database host
-        database: environment === 'development' ? process.env.DB_NAME : process.env.TEST_DB_NAME, // Database name
+        database: process.env.NODE_ENV === 'development' ? process.env.DB_NAME : process.env.TEST_DB_NAME, // Database name
         password:  process.env.DB_PASSWORD, // Database password
         port:  process.env.DB_PORT, // Database port (default for PostgreSQL)
     });

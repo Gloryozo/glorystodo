@@ -1,12 +1,22 @@
-import { initializeTestDatabase } from "./helper/test";
+import { initializeTestDatabase, insertTestUser, getToken } from "./helper/test.js";
 import { expect } from "chai"; // Import the 'expect' assertion style from Chai
+import dotenv from 'dotenv';
+import { before } from 'mocha';
+dotenv.config();
 
 const base_url = 'http://localhost:3001/'; // Define the base URL for the API
 // Describe the test suite for the GET tasks functionality
 /*describe('Tasks API', () => {
     let taskId; // Variable to store the ID of the created task*/
 
-describe('GET task', () => {
+describe('GET tasks', () => {
+    // Initialize the test database before running the tests
+    before(() => {
+         initializeTestDatabase();
+       
+        });
+    
+
     // Define a test case to check if it returns a list of all tasks
     it('should return a list of all tasks', async () => {
         // Make a GET request to the server
@@ -26,102 +36,97 @@ describe('GET task', () => {
     });
 });
 
+
 // Positive test case for POST task
 
-describe('POST task', () => {
-    // Define a test case to create a new task
-    it('should create a new task', async () => {
-        // Define the task data
-        const taskData = {
-            description: 'Unit test task'
-        };
+describe('POST mytask', () => {
 
-        // Make a POST request to the server
+    const email = 'post@foo.com'
+    const password = 'post123'
+    insertTestUser(email, password)
+    it('should post a task', async () => {
+        const token = `Bearer ${getToken(email)}`;
         const response = await fetch(base_url + 'create', {
             method: 'post',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': token
             },
-            body: JSON.stringify(taskData)
-        });
+            body: JSON.stringify({ 'description': 'Task from unit test' })
+        })
+        const data = await response.json()
 
-        // Parse the JSON response
-        const data = await response.json();
+        expect(response.status).to.equal(200)
+        expect(data).to.be.an('object')
+        expect(data).to.include.all.keys('id')
+    })
 
-        // Assert that the response status is 201 (Created)
-        expect(response.status).to.equal(201);
+    it('should not post a task without description', async () => {
+        const token = `Bearer ${getToken(email)}`;
+        const response = await fetch(base_url + 'create', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            },
+            body: JSON.stringify({ 'description': null })
+        })
+        const data = await response.json()
 
-        // Assert that the data is an object
-        expect(data).to.be.an('object');
+        expect(response.status).to.equal(500)
+        expect(data).to.be.an('object')
+        expect(data).to.include.all.keys('error')
+    })
+})
 
-        // Assert that the data includes the keys 'id' and 'description'
-        expect(data).to.include.all.keys('id');
-    });
-});
-//Negetive test case for POST task
-describe('POST task negative cases', () => {
-  
-it('should not create a new task without a description', async () => {
-    const response = await fetch(base_url + 'create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}) // Sending an empty object
-    });
 
-    const data = await response.json();
+describe('DELETE mytask', () => {
+    const email = 'delete@foo.com';
+    const password = 'delete123';
+    insertTestUser(email, password);
 
-    // Assert that the response status is 400
-    expect(response.status).to.equal(500);
-    expect(data).to.be.an('object');
-    expect(data).to.include.all.keys('error'); // Check for the error key
-});
-});
-
-describe('DELETE task', () => {
-    // Define a test case to delete a task
     it('should delete a task', async () => {
-    
-        // Make a DELETE request to the server
+        const token = `Bearer ${getToken(email)}`;
         const response = await fetch(base_url + 'delete/1', {
-            method: 'DELETE'
+            method: 'delete',
+            headers: { 'Authorization': token }
         });
+        const data = await response.json()
 
-        // Parse the JSON response
-        const data = await response.json();
-        
-        // Assert that the response status is 200 (OK)
-        expect(response.status).to.equal(200);
+        expect(response.status).to.equal(200)
+        expect(data).to.be.an('object')
+        expect(data).to.include.all.keys('id')
+    })
 
-        // Assert that the data is an object
-        expect(data).to.be.an('object');
+    it('should not delete a task with SQL injection', async () => {
+        const token = `Bearer ${getToken(email)}`;
+        const response = await fetch(base_url + 'delete/id=0 or id > 0', {
+            method: 'delete',
+            headers: {
+                'Authorization': token
+            }
+        })
+        const data = await response.json()
 
-        // Assert that the data includes the key 'id' with the value '1'
-        expect(data).to.include.all.keys({ id: '1' });
-    });
-// negetive test case for DELETE task
-it ('should not delete a task with SQL injection', async () => {
-    const response = await fetch(base_url + 'delete/is=0 or id > 0', {
-        method: 'DELETE'
-    });
+        expect(response.status).to.equal(500, data.error)
+        expect(data).to.be.an('object')
+        expect(data).to.include.all.keys('error')
+    })
+})
 
-    const data = await response.json();
 
-    // Assert that the response status is 404
-    expect(response.status).to.equal(500);
-    expect(data).to.be.an('object');
-    expect(data).to.include.all.keys('error');
-    });
-    });
-    describe ('POST register', () => {
-        const email = 'testing@example.com';
-        const password = 'test123';
+describe ('POST register', () => {
+    const email = 'testingg@example.com';
+    const password = 'testigg123';
+    insertTestUser(email, password);
+    const token = getToken(email);
+
         it ('should register a new user with valid email and password', async () => {
             const response = await fetch(base_url + 'user/register', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    //'Authorization': token
                 },
                 body: JSON.stringify({ 'email': email, 'password':password })
             });
@@ -139,14 +144,18 @@ it ('should not delete a task with SQL injection', async () => {
         });
     });
 
-    describe ('POST login', () => {
-        const email = 'login@example.com';
-        const password = 'login123';
+describe ('POST login', () => {
+    const email = 'testingg@example.com';
+    const password = 'testigg123';
+    insertTestUser(email, password);
+    const token = getToken(email);
+
         it ('should login a user with valid email and password', async () => {
             const response = await fetch(base_url + 'user/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': token
                 },
                 body: JSON.stringify({ 'email': email, 'password':password })
             });

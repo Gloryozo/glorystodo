@@ -5,51 +5,51 @@ import axios from 'axios'; // Import the axios library to make HTTP requests.
 
 const url = 'http://localhost:3001/';
 
- function App() {
-  // We create a state variable called 'task' to hold the current task input by the user.
-  // 'setTask' is a function that updates the 'task' state.
-  const [task, setTask] = useState('');
-    // We create another state variable called 'tasks' which is an array to hold all the tasks.
-  // 'setTasks' is a function that updates the 'tasks' state.
-  const [tasks, setTasks] = useState([]);
+function App() {
+  const [task, setTask] = useState(''); // State for current task input
+  const [tasks, setTasks] = useState([]); // State for all tasks
 
   useEffect(() => {
     axios.get(url)
       .then(response => {
-        setTasks(response.data)
-    }).catch(error => {
-        alert(error.response.data.error ? error.response.data.error : error)
-     });
+        setTasks(response.data);
+      })
+      .catch(error => {
+        alert(error.response.data.error ? error.response.data.error : error);
+      });
   }, []);
 
-  
-  // This function adds the current task to the tasks array when called.
+  // Define the addTask function
   const addTask = () => {
-    axios.post(url + 'create',{
+     // Retrieve the token
+    axios.post(url + 'create', {
       description: task
+    }, {
+      headers: {
+       'Content-Type': 'application/json'
+      }
     })
     .then(response => {
-      console.log(response)
-      setTasks([...tasks,{id: response.data.id,description: task}]); // Add the new task to the existing list of tasks.
+      console.log(response);
+      setTasks([...tasks, { id: response.data.id, description: task }]); // Add the new task to the existing list of tasks.
       setTask(''); // Clear the input field after adding the task.
-    }).catch(error => {
-      alert(error.response.data.error ? error.response.data.error : error)
+    })
+    .catch(error => {
+      alert(error.response.data.error ? error.response.data.error : error);
     });
-    
-  }
+  };
 
-  // This function deletes a task from the tasks array when called.
+  // Remove task from the list
   const deleteTask = (id) => {
     axios.delete(url + 'delete/' + id)
       .then(response => {
-        console.log(response)
-        // Create a new array without the deleted task.
-        const withoutRemoved = tasks.filter((item) => item.id !== id);
-        setTasks(withoutRemoved); // Update the tasks state with the new array.
+        const withoutRemoved = tasks.filter(item => item.id !== id);
+        setTasks(withoutRemoved);
       }).catch(error => {
-        alert(error.response.data.error ? error.response.data.error : error)
-      });
+        alert(error.response.data.error ? error.response.data.error : error);
+      })
   }
+
 
   return (
     <div id="container"> {/* Main container for our app */}

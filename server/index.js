@@ -4,6 +4,8 @@ import cors from 'cors'; // Import CORS to allow cross-origin requests
 import myTodoRouter from './routes/myTodoRouter.js'; // Import the router object from the myTodoRouter.js file
 import userRouter  from './routes/userRouter.js'; // Import the router object from the userRouter.js file
 
+import dotenv from 'dotenv';
+dotenv.config();
 // Set the port number where the server will listen for requests
 const port = process.env.PORT 
 const app = express(); // Create an instance of an Express application
