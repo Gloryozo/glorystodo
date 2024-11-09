@@ -1,18 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Home from './screens/Home.js';
+import Home from './screens/Home';
+import reportWebVitals from './reportWebVitals';
 import Authentication, { AuthenticationMode } from './screens/Authentication';
 import ErrorPage from './screens/ErrorPage';
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ProtectedRoute from './components/ProtectedRoute.js';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 import UserProvider from './context/UserProvider';
-import reportWebVitals from './reportWebVitals';
 
 
 const router = createBrowserRouter([
   {
-      errorElement: <ErrorPage />
+    errorElement: <ErrorPage />
   },
   {
     path: "/signin",
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Authentication authenticationMode={AuthenticationMode.Register} />
-  }, 
+  },
   {
     element: <ProtectedRoute />,
     children: [
@@ -31,7 +31,7 @@ const router = createBrowserRouter([
       }
     ]
   }
-]);
+])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -45,4 +45,4 @@ root.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();  
+reportWebVitals();

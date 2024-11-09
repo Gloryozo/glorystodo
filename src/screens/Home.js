@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'; // Import the useState Hook to manage state in our component.
+import {  useEffect, useState } from 'react'; // Import the useState Hook to manage state in our component.
 import './Home.css'; // Import the CSS file for styling our app.
 import axios from 'axios'; // Import the axios library to make HTTP requests.
-import Row from '../components/Row';
+import Row from '../components/Row';              // Import the Row component to display each task.
+import { useUser } from '../context/useUser'; // Import the custom hook for using the UserContext
 
 
 const url = 'http://localhost:3001/';
@@ -24,13 +25,10 @@ function Home() {
   // Define the addTask function
   const addTask = () => {
      // Retrieve the token
+     const headers = { headers: {Authorization: user.token} }
     axios.post(url + 'create', {
       description: task
-    }, {
-      headers: {
-       'Content-Type': 'application/json'
-      }
-    })
+    },headers)
     .then(response => {
       console.log(response);
       setTasks([...tasks, { id: response.data.id, description: task }]); // Add the new task to the existing list of tasks.
@@ -43,7 +41,9 @@ function Home() {
 
   // Remove task from the list
   const deleteTask = (id) => {
-    axios.delete(url + 'delete/' + id)
+    // Retrieve the token
+    const headers = {headers: {Authorization:user.token}}
+    axios.delete(url + 'delete/' + id,headers)
       .then(response => {
         const withoutRemoved = tasks.filter(item => item.id !== id);
         setTasks(withoutRemoved);

@@ -20,10 +20,11 @@ export default function Authentication({authenticationMode}) {
                 navigate('/signin')
             } else {
                 await signIn()
-                navigate('/')
+                navigate('/signin')
             }
         } catch (error) {
-          const message = error.response && error.response.data ? error.response.data.error : error
+            console.error('Error:', error)
+        const message = error.response && error.response.data ? error.response.data.error : error;
           alert(message)
         }
      }
@@ -40,12 +41,12 @@ export default function Authentication({authenticationMode}) {
             <input type="password" placeholder="Password" value={user.password} onChange={e => setUser({...user, password: e.target.value})} />
         </div>
         <div>
-            <button type="submit">{authenticationMode === AuthenticationMode.Login ? 'Login' : 'Submit'}</button>
+            <button>{authenticationMode === AuthenticationMode.Login ? 'Login' : 'Submit'}</button>
         </div>
         <div>
-           <Link to={authenticationMode === AuthenticationMode.Login ? 'No account? Sign up' :'Already signed up? Sign in'}>
-                {authenticationMode === AuthenticationMode.Login ? 'Sign up' : 'Sign in'}
-            </Link>
+        <Link to={authenticationMode === AuthenticationMode.Login ? '/signup' : '/signin'}>
+            {authenticationMode === AuthenticationMode.Login ? 'No account? Sign up' : 'Already signed up? Sign in'}
+        </Link>
         </div>
       </form>
     </div>

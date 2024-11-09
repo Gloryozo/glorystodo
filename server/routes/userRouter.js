@@ -35,7 +35,7 @@ router.post('/register', async (req, res, next) => {
     // Insert a new user into the database
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', (req, res, next) => {
     const invalid_message = 'Invalid credentials.';
     console.log('POST /login - Request body:', req.body); // Log the request body
 
@@ -51,7 +51,8 @@ router.post('/login', async (req, res, next) => {
                     console.warn('Login attempt with non-existent email:', req.body.email); // Log warning for non-existent email
                     return next(new Error(invalid_message)); // Email not found
                 }
-
+                console.log('User fetched from database:', result.rows[0]);
+                console.log('Password from request:', req.body.password);
                 compare(req.body.password, result.rows[0].password, (error, match) => {
                     if (error) {
                         console.error('Error comparing passwords:', error); // Log hash comparison error
@@ -62,7 +63,7 @@ router.post('/login', async (req, res, next) => {
                         return next(new Error(invalid_message)); // Password is incorrect
                     }
                     
-                    const token = sign({ user: req.body.email }, process.env.JWT_SECRET_KEY);
+                    const token = sign({ user: req.body.email }, process.env.JWT_SECRET_KEY || 'default_secret_key');
                     const user = result.rows[0];
                     console.log('User logged in successfully:', { id: user.id, email: user.email }); // Log successful login
                     return res.status(200).json({
