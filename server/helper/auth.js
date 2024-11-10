@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
-const  {verify} = jwt;
-const authorizationRequired = "Authorization required";
-const invalidCredentials = "Invalid credentials";
+const { verify } = jwt
+const authorizationRequired = 'Authorization required'
+const invalidCredentials = 'Invalid credentials'
 
-dotenv.config()
+dotenv.config();
 
 const auth = (req, res, next) => {
     if (!req.headers.authorization) {
@@ -13,7 +13,7 @@ const auth = (req, res, next) => {
         res.status(401).json({ message: authorizationRequired })
     } else {
         try {
-            const token = req.headers.authorization.split(' ')[1];
+            const token = req.headers.authorization;
             jwt.verify(token, process.env.JWT_SECRET_KEY)
             next()
         } catch (err) {
