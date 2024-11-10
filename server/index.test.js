@@ -56,7 +56,7 @@ describe('POST mytask', () => {
         })
         const data = await response.json()
 
-        expect(response.status).to.equal(200)
+        expect(response.status).to.equal(201)
         expect(data).to.be.an('object')
         expect(data).to.include.all.keys('id')
     })

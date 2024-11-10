@@ -4,6 +4,7 @@ import { hash, compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 const { sign } = jwt;
 
+
 const router = Router(); // Create a new router
 
 router.post('/register', async (req, res, next) => {

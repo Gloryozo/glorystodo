@@ -4,14 +4,12 @@ import React from 'react';
 import { useUser } from '../context/useUser';
 
 export const AuthenticationMode = Object.freeze({
-    Login: 'login',
-    Register: 'Register',
-});
-
-export default function Authentication({authenticationMode}) {
+    Login: 'Login',
+    Register: 'Register'
+})
+export default function Authentication({ authenticationMode }) {
     const { user, setUser, signUp, signIn } = useUser()
     const navigate = useNavigate()
-
     const handleSubmit = async (event) => {
         event.preventDefault()
         try {
@@ -20,14 +18,14 @@ export default function Authentication({authenticationMode}) {
                 navigate('/signin')
             } else {
                 await signIn()
-                navigate('/signin')
+                navigate('/')
             }
         } catch (error) {
-            console.error('Error:', error)
-        const message = error.response && error.response.data ? error.response.data.error : error;
-          alert(message)
+            const message = error.response && error.response.data ? error.response.data.error : error
+            alert(message)
         }
-     }
+    }
+   
   return (
     <div className="auth-container">
         <h3>{authenticationMode === AuthenticationMode.Login ? 'Sign in' : 'Sign up'}</h3>

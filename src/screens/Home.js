@@ -9,7 +9,7 @@ const url = 'http://localhost:3001/';
 
 function Home() {
   const { user } = useUser(); // Destructure the user object from the UserContext
-  const [task, setTask] = useState(''); // State for current task input
+  const [task, setTask] = useState(""); // State for current task input
   const [tasks, setTasks] = useState([]); // State for all tasks
 
   useEffect(() => {
@@ -24,15 +24,15 @@ function Home() {
 
   // Define the addTask function
   const addTask = () => {
-     // Retrieve the token
-     const headers = { headers: {Authorization: user.token} }
+    const headers = { headers: { Authorization: user.token } }
+    console.log("Authorization: ", headers);
     axios.post(url + 'create', {
       description: task
-    },headers)
+    }, headers)
     .then(response => {
-      console.log(response);
       setTasks([...tasks, { id: response.data.id, description: task }]); // Add the new task to the existing list of tasks.
       setTask(''); // Clear the input field after adding the task.
+      console.log(response);
     })
     .catch(error => {
       alert(error.response.data.error ? error.response.data.error : error);
@@ -41,10 +41,9 @@ function Home() {
 
   // Remove task from the list
   const deleteTask = (id) => {
-    // Retrieve the token
-    const headers = {headers: {Authorization:user.token}}
-    axios.delete(url + 'delete/' + id,headers)
-      .then(response => {
+    const headers = { headers: { Authorization: user.token } };
+    axios.delete(url + "delete/" + id, headers)
+      .then((response) => {
         const withoutRemoved = tasks.filter(item => item.id !== id);
         setTasks(withoutRemoved);
       }).catch(error => {
