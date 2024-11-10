@@ -56,7 +56,7 @@ describe('POST mytask', () => {
         })
         const data = await response.json()
 
-        expect(response.status).to.equal(201)
+        expect(response.status).to.equal(200)
         expect(data).to.be.an('object')
         expect(data).to.include.all.keys('id')
     })
@@ -73,7 +73,7 @@ describe('POST mytask', () => {
         })
         const data = await response.json()
 
-        expect(response.status).to.equal(500)
+        expect(response.status).to.equal(400, data.error)
         expect(data).to.be.an('object')
         expect(data).to.include.all.keys('error')
     })
@@ -114,10 +114,9 @@ describe('DELETE mytask', () => {
     })
 })
 
-
 describe ('POST register', () => {
-    const email = 'testingg@example.com';
-    const password = 'testigg123';
+    const email = 'testmei@example.com';
+    const password = 'testmei123';
     insertTestUser(email, password);
     const token = getToken(email);
 
@@ -143,6 +142,23 @@ describe ('POST register', () => {
             expect(data).to.include.all.keys('id', 'email');
         });
     });
+
+
+    it("should not post a user with less than 8 character password", async () => {
+        const email = "register@foo.com";
+        const password = "short1";
+        const response = await fetch(base_url + "user/register", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: email, password: password }),
+        })
+        const data = await response.json();
+        expect(response.status).to.equal(400, data.error);
+        expect(data).to.be.an("object");
+        expect(data).to.include.all.keys("error");
+    })
 
 describe ('POST login', () => {
     const email = 'testingg@example.com';

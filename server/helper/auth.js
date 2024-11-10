@@ -13,7 +13,7 @@ const auth = (req, res, next) => {
         res.status(401).json({ message: authorizationRequired })
     } else {
         try {
-            const token = req.headers.authorization;
+            const token = req.headers.authorization.split(' ')[1]
             jwt.verify(token, process.env.JWT_SECRET_KEY)
             next()
         } catch (err) {
