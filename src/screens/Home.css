@@ -1,19 +1,74 @@
+body {
+   font-family: 'Arial', sans-serif; /* Use a clean font */
+   background-color: #f4f4f4; /* Light background for contrast */
+   margin: 0;
+   padding: 0;
+}
+
 h1 {
    color: #490b0b;
+   text-align: center; /* Center the title */
+   margin-bottom: 20px; /* Space below the title */
 }
+
 #container {
-   
+   max-width: 600px; /* Limit the width of the container */
+   margin: 0 auto; /* Center the container */
    padding: 16px;
+   background-color: white; /* White background for the container */
+   border-radius: 8px; /* Rounded corners */
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
+
+form {
+   display: flex; /* Use flexbox for form layout */
+   justify-content: space-between; /* Space between input and button */
+   margin-bottom: 20px; /* Space below the form */
+}
+
+input[type="text"] {
+   flex: 1; /* Allow input to take available space */
+   padding: 10px; /* Padding inside the input */
+   border: 2px solid #490b0b; /* Border color */
+   border-radius: 4px; /* Rounded corners for input */
+   margin-right: 10px; /* Space between input and button */
+}
+
+input[type="text"]:focus {
+   outline: none; /* Remove default outline */
+   border-color: #a52a2a; /* Change border color on focus */
+}
+
+ul {
+   list-style-type: none; /* Remove bullet points */
+   padding: 0; /* Remove padding */
+}
+
 li {
-   margin-buttom: 8px;
+   background-color: #f9f9f9; /* Light background for list items */
+   border: 1px solid #ddd; /* Border around list items */
+   border-radius: 4px; /* Rounded corners */
+   padding: 10px; /* Padding inside list items */
+   margin-bottom: 8px; /* Space between list items */
+   display: flex; /* Use flexbox for item layout */
+   justify-content: space-between; /* Space between task description and button */
+   align-items: center; /* Center items vertically */
 }
+
 .delete-button {
-   background-color: #490b0b;
+   background-color: #d9534f; /* Bootstrap danger color */
    color: white;
    border: none;
-   padding: 4px;
-   border-radius: 8px;
+   padding: 6px 12px; /* More padding for the button */
+   border-radius: 4px; /* Rounded corners */
    cursor: pointer;
-   margin-left: 16px;
+   transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.delete-button:hover {
+   background-color: #c9302c; /* Darker red on hover */
+}
+
+.delete-button:focus {
+   outline: none; /* Remove default outline */
 }
